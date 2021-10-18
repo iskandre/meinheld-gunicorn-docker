@@ -42,16 +42,16 @@ def verify_container(container: Container, response_text: str) -> None:
 @pytest.mark.parametrize(
     "environment",
     [
-        {"MODULE_NAME": "custom_app.custom_main", "VARIABLE_NAME": "custom_var", "PORT":"8000"},
-        {"APP_MODULE": "custom_app.custom_main:custom_var", "PORT":"8000"},
+        {"MODULE_NAME": "custom_app.custom_main", "VARIABLE_NAME": "custom_var", "PORT":"8000", "IS_SIMPLIFIED":1},
+        {"APP_MODULE": "custom_app.custom_main:custom_var", "PORT":"8000","IS_SIMPLIFIED":1},
     ],
 )
 def test_custom_app(environment: Dict[str, str]) -> None:
     img_name = IMAGE_FULL_NAME
-    # if ((os.getenv("IS_SIMPLIFIED",1) == 1) and (not name.endswith('-simplified'))):
-    #     name = name + '-simplified'
-    if (not img_name.endswith('-simplified')):
-        img_name = img_name + '-simplified'
+    if ((os.getenv("IS_SIMPLIFIED",0) == 1) and (not name.endswith('-simplified'))):
+        name = name + '-simplified'
+    # if (not img_name.endswith('-simplified')):
+    #     img_name = img_name + '-simplified'
     image_test_name = 'test-build'
     dockerfile_content = generate_dockerfile_content(img_name)
     dockerfile = "Dockerfile"

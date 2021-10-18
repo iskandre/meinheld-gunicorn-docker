@@ -36,7 +36,7 @@ def verify_container(container: Container, response_text: str) -> None:
 
 def test_env_vars_1() -> None:
     img_name = IMAGE_FULL_NAME
-    if (not img_name.endswith('-simplified')):
+    if (int((os.getenv("IS_SIMPLIFIED",0) == 1)) and (not img_name.endswith('-simplified'))):
         img_name = img_name + '-simplified'
     response_text = get_response_text1()
     sleep_time = int(os.getenv("SLEEP_TIME", 1))

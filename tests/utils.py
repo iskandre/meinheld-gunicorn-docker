@@ -10,7 +10,9 @@ from docker.models.containers import Container
 CONTAINER_NAME = "meinheld-gunicorn-test"
 IMAGE_NAME = os.getenv("IMAGE_NAME")
 IMAGE_TAG = os.getenv("TAG_NAME")
-if os.getenv("IS_SIMPLIFIED",0) == 1:
+print(IMAGE_TAG)
+print(os.getenv('IS_SIMPLIFIED'))
+if int(os.getenv("IS_SIMPLIFIED",0)) == 1:
     IMAGE_TAG = IMAGE_TAG + '-simplified'
 IMAGE_FULL_NAME = f"{IMAGE_NAME}:{IMAGE_TAG}"
 # IMAGE_TAG = 'python3.7-alpine-latest-simplified'

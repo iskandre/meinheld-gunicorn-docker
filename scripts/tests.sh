@@ -15,4 +15,4 @@ alias python="poetry run python"
 #python -m black tests/
 #python -m isort tests/
 #python -m flake8 tests/ 
-python -m pytest tests/
+python -m pytest -rx tests/

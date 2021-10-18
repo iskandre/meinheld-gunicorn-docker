@@ -114,3 +114,6 @@ poetry.lock
 tests/test_03_untested_apps/
 # .env file, TODO: put an example in README
 .env
+# Testing nohup files
+*.out
+nohup.out
