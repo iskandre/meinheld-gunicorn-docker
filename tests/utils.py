@@ -15,10 +15,6 @@ print(os.getenv('IS_SIMPLIFIED'))
 if int(os.getenv("IS_SIMPLIFIED",0)) == 1:
     IMAGE_TAG = IMAGE_TAG + '-simplified'
 IMAGE_FULL_NAME = f"{IMAGE_NAME}:{IMAGE_TAG}"
-# IMAGE_TAG = 'python3.7-alpine-latest-simplified'
-# IMAGE_NAME = 'alexiskandre/meinheld-gunicorn'
-# IMAGE_FULL_NAME = f"{IMAGE_NAME}:{IMAGE_TAG}"
-
 
 
 def get_process_names(container: Container) -> List[str]:
