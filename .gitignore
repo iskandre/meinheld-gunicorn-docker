@@ -110,3 +110,7 @@ crashlytics-build.properties
 # Custom
 Pipfile.lock
 poetry.lock
+# Not finished tests
+tests/test_03_untested_apps/
+# .env file, TODO: put an example in README
+.env

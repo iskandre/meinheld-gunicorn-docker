@@ -1,12 +1,15 @@
-FROM python:3.7-alpine3.8
+FROM python:3.7-alpine3.14
 
-LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
+LABEL maintainer="Alexander Komarov <iskandre@gmail.com>"
 
 COPY requirements.txt /tmp/requirements.txt
 
 RUN apk add --no-cache --virtual .build-deps gcc libc-dev \
+    # python3-dev linux-headers build-base \
+    linux-headers build-base libc6-compat \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
-    && apk del .build-deps gcc libc-dev
+    # && apk del .build-deps gcc libc-dev build-base linux-headers python3-dev
+    && apk del .build-deps gcc libc-dev build-base linux-headers
 
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
