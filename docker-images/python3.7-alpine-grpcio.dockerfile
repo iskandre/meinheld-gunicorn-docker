@@ -1,15 +1,13 @@
-FROM python:3.7-alpine3.14
+FROM python:3.7-alpine
 
 LABEL maintainer="Alexander Komarov <iskandre@gmail.com>"
 
 COPY requirements.txt /tmp/requirements.txt
 
 RUN apk add --no-cache --virtual .build-deps gcc libc-dev \
-    # python3-dev linux-headers build-base \
     linux-headers build-base libc6-compat \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
-    && pip install grpcio grpcio-tools google-cloud-secret-manager \
-    # && apk del .build-deps gcc libc-dev build-base linux-headers python3-dev
+    && pip install grpcio grpcio-tools \
     && apk del .build-deps gcc libc-dev build-base linux-headers
 
 RUN apk add --no-cache libstdc++

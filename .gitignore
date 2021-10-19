@@ -117,3 +117,5 @@ tests/test_03_untested_apps/
 # Testing nohup files
 *.out
 nohup.out
+# Unused scripts
+scripts/unused-*

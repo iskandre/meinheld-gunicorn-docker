@@ -42,16 +42,12 @@ def verify_container(container: Container, response_text: str) -> None:
 @pytest.mark.parametrize(
     "environment",
     [
-        {"MODULE_NAME": "custom_app.custom_main", "VARIABLE_NAME": "custom_var", "PORT":"8000", "IS_SIMPLIFIED":1},
-        {"APP_MODULE": "custom_app.custom_main:custom_var", "PORT":"8000","IS_SIMPLIFIED":1},
+        {"MODULE_NAME": "custom_app.custom_main", "VARIABLE_NAME": "custom_var", "PORT":"8000"},
+        {"APP_MODULE": "custom_app.custom_main:custom_var", "PORT":"8000"},
     ],
 )
 def test_custom_app(environment: Dict[str, str]) -> None:
     img_name = IMAGE_FULL_NAME
-    if ((os.getenv("IS_SIMPLIFIED",0) == 1) and (not name.endswith('-simplified'))):
-        name = name + '-simplified'
-    # if (not img_name.endswith('-simplified')):
-    #     img_name = img_name + '-simplified'
     image_test_name = 'test-build'
     dockerfile_content = generate_dockerfile_content(img_name)
     dockerfile = "Dockerfile"
@@ -62,9 +58,9 @@ def test_custom_app(environment: Dict[str, str]) -> None:
     path = test_path.parent / "custom_app"
     dockerfile_path = path / dockerfile
     dockerfile_path.write_text(dockerfile_content)
-    client.images.build(path=str(path), dockerfile=dockerfile, tag=image_test_name)
+    client.images.build(path=str(path), dockerfile=dockerfile, tag=f'{image_test_name}:{IMAGE_TAG}')
     container = client.containers.run(
-        image_test_name+':latest',
+        f'{image_test_name}:{IMAGE_TAG}',
         name=CONTAINER_NAME,
         environment=environment,
         ports={"8000": "8000"},
