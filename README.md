@@ -2,35 +2,44 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-* [`python3.9`, `latest` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.9.dockerfile)
-* [`python3.8` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.8.dockerfile)
-* [`python3.7`, _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.7.dockerfile)
-* [`python3.6` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.6.dockerfile)
-
-## Discouraged tags
-
-* [`python3.9-alpine3.13` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.9-alpine3.13.dockerfile)
-* [`python3.8-alpine3.11` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.8-alpine3.11.dockerfile)
-* [`python3.7-alpine3.8` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine3.8.dockerfile)
-* [`python3.6-alpine3.8` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python3.6-alpine3.8.dockerfile)
-
-## Deprecated
-
-These tags are no longer supported:
-
-* [`python2.7` _(Dockerfile)_](https://github.com/tiangolo/meinheld-gunicorn-docker/blob/master/docker-images/python2.7.dockerfile)
-
+* [`python3.7-alpine-google-secret-manager`, `latest` _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-google-secret-manager.dockerfile)
+* [`python3.7-alpine-grpcio`, _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-grpcio.dockerfile)
+* [`python3.7-alpine-simplified` _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-simplified.dockerfile)
 ---
 
-**Note**: There are [tags for each build date](https://hub.docker.com/r/tiangolo/meinheld-gunicorn/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `tiangolo/meinheld-gunicorn:python3.7-2019-10-15`.
+**Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-google-secret-manager`.
 
 # meinheld-gunicorn
 
-[**Docker**](https://www.docker.com/) image with [**Meinheld**](http://meinheld.org/) managed by [**Gunicorn**](https://gunicorn.org/) for high-performance web applications in **[Python](https://www.python.org/)**, with performance auto-tuning. Optionally with Alpine Linux.
+[**Docker**](https://www.docker.com/) image with [**Meinheld**](http://meinheld.org/) managed by [**Gunicorn**](https://gunicorn.org/) for high-performance web applications in **[Python](https://www.python.org/)**, with performance auto-tuning. Built in Alpine Linux.
 
-**GitHub repo**: [https://github.com/tiangolo/meinheld-gunicorn-docker](https://github.com/tiangolo/meinheld-gunicorn-docker)
+Meinheld is served through Gunicorn via `--worker-class="egg:meinheld#gunicorn_worker` in gunicorn command according to [**Meinheld official**](http://meinheld.org/).
 
-**Docker Hub image**: [https://hub.docker.com/r/tiangolo/meinheld-gunicorn/](https://hub.docker.com/r/tiangolo/meinheld-gunicorn/)
+
+## grpcio, grpcio-tools, google-cloud-secret-manager preinstalled with Alpin Linux system
+
+You won't be able to install python google-cloud libraries in Alpin system without grpcio installed. However it takes a long while for the installation (20+ mins). Also you will need some C++ dependecies to be able to run, for example, google secretmanager. This Docker image has everything pre-setup already in Alpine Linux to work with google cloud libraries.
+
+
+## Optimized for Kubernetes
+
+If you have a cluster of machines with **Kubernetes**, **Google Clour Run**, **Docker Swarm Mode**, **Nomad** or other similar complex system to manage distributed containers on multiple machines, then you're likely to handle replication at the cluster level instead of using a process manager in each container that starts multiple worker processes (this is what this Docker image does).
+
+---
+
+For this reason, by default the number of workers is set to 1 in the predefined [**Gunicorn config file**](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/gunicorn_conf.py)
+
+---
+
+However you can always modify it by either 
+* creating your ownr Gunicorn config file placing it to /app/ directory
+* setting is_web_concurrency = True with WORKERS_PER_CORE = 2 (or higher) in your env variables
+
+## Sources
+
+**GitHub repo**: [https://github.com/iskandre/meinheld-gunicorn-docker/](https://github.com/iskandre/meinheld-gunicorn-docker/)
+
+**Docker Hub image**: [https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/)
 
 ## Description
 
