@@ -10,7 +10,7 @@
   *the latest version of Alpine*
 ---
 
-**Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-google-secret-manager`.
+**Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-gcp-secret-manager`.
 
 Dockerfiles with other versions python (without preinstalled grpcio libs) can be found in the [original git repository](https://github.com/tiangolo/meinheld-gunicorn-docker/). 
 
@@ -26,10 +26,15 @@ Python web applications running with **Meinheld** controlled by **Gunicorn** hav
 
 This applies to frameworks like **Flask** and **Django**.
 
+## System
 
-## Grpcio and Google Cloud libs preinstalled in Alpin Linux system
+The latest version of Alpine Linux.
 
-You won't be able to install python google-cloud libraries in Alpin system without grpcio installed. However it takes a long while for the installation (20+ mins). Also you will need some C++ dependecies to be able to run, for example, google secretmanager. This Docker image has everything pre-setup already in Alpine Linux to work with google cloud libraries.
+## grpcio, grpcio-tools, google-cloud-secret-manager libraries preinstalled
+
+If you're using [Google Cloud Secret Manager](https://cloud.google.com/secret-manager/), you might face a problem that it is not possible to install python's [gcp-secret-manager library](https://pypi.org/project/google-cloud-secret-manager/) in Alpine without grpcio installed. However it takes a long while for the installation (20+ mins). Also you will need some C++ dependecies to be able to run it after installtion. 
+
+This Docker image has already everything pre-setup in Alpine Linux to be able to start working with google.cloud libraries right away.
 
 
 ## Working on cluster machines
