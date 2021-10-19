@@ -2,12 +2,17 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-* [`python3.7-alpine-google-secret-manager`, `latest` _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-google-secret-manager.dockerfile)
+* [`python3.7-alpine-gcp-secret-manager`, `latest` _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-google-secret-manager.dockerfile)
+  *contains grpcio, grpcio-tools and google-cloud-secret-manager installed; the latest version of Alpine*
 * [`python3.7-alpine-grpcio`, _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-grpcio.dockerfile)
-* [`python3.7-alpine-simplified` _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-simplified.dockerfile)
+  *contains grpcio, grpcio-tools installed; the latest version of Alpine; google-cloud-secret-manager can be installed via pip without dependecies problems*
+* [`python3.7-alpine` _(Dockerfile)_](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/python3.7-alpine-simplified.dockerfile)
+  *the latest version of Alpine*
 ---
 
 **Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-google-secret-manager`.
+
+Dockerfiles with other versions python (without preinstalled grpcio libs) can be found in the [original git repository](https://github.com/tiangolo/meinheld-gunicorn-docker/). 
 
 ## meinheld-gunicorn
 
