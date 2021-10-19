@@ -9,19 +9,25 @@
 
 **Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-google-secret-manager`.
 
-# meinheld-gunicorn
+## meinheld-gunicorn
 
 [**Docker**](https://www.docker.com/) image with [**Meinheld**](http://meinheld.org/) managed by [**Gunicorn**](https://gunicorn.org/) for high-performance web applications in **[Python](https://www.python.org/)**, with performance auto-tuning. Built in Alpine Linux.
 
-Meinheld is served through Gunicorn via `--worker-class="egg:meinheld#gunicorn_worker` in gunicorn command according to [**Meinheld official**](http://meinheld.org/).
+**Meinheld** is a high-performance WSGI-compliant web server.
+
+Meinheld is served through Gunicorn via `--worker-class="egg:meinheld#gunicorn_worker` in [Docker Start Gunicorn command](https://github.com/iskandre/meinheld-gunicorn-docker/blob/master/docker-images/start.sh) according to [**Meinheld official**](http://meinheld.org/).
+
+Python web applications running with **Meinheld** controlled by **Gunicorn** have some of the [best performances achievable by (older) Python frameworks](https://www.techempower.com/benchmarks/#section=test&runid=a979de55-980d-4721-a46f-77298b3f3923&hw=ph&test=fortune&l=zijzen-7) based on WSGI (synchronous code, instead of ASGI, which is asynchronous) (*).
+
+This applies to frameworks like **Flask** and **Django**.
 
 
-## grpcio, grpcio-tools, google-cloud-secret-manager preinstalled with Alpin Linux system
+## Grpcio and Google Cloud libs preinstalled in Alpin Linux system
 
 You won't be able to install python google-cloud libraries in Alpin system without grpcio installed. However it takes a long while for the installation (20+ mins). Also you will need some C++ dependecies to be able to run, for example, google secretmanager. This Docker image has everything pre-setup already in Alpine Linux to work with google cloud libraries.
 
 
-## Optimized for Kubernetes
+## Working on cluster machines
 
 If you have a cluster of machines with **Kubernetes**, **Google Clour Run**, **Docker Swarm Mode**, **Nomad** or other similar complex system to manage distributed containers on multiple machines, then you're likely to handle replication at the cluster level instead of using a process manager in each container that starts multiple worker processes (this is what this Docker image does).
 
@@ -41,107 +47,6 @@ However you can always modify it by either
 
 **Docker Hub image**: [https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/)
 
-## Description
-
-Python web applications running with **Meinheld** controlled by **Gunicorn** have some of the [best performances achievable by (older) Python frameworks](https://www.techempower.com/benchmarks/#section=test&runid=a979de55-980d-4721-a46f-77298b3f3923&hw=ph&test=fortune&l=zijzen-7) based on WSGI (synchronous code, instead of ASGI, which is asynchronous) (*).
-
-This applies to frameworks like **Flask** and **Django**.
-
-If you have an already existing application in Flask, Django, or similar frameworks, this image will give you the best performance possible (or close to that).
-
-This image has an "auto-tuning" mechanism included, so that you can just add your code and get **good performance** automatically. And without making sacrifices (like logging).
-
-### * Note on performance and features
-
-If you are starting a new project, you might benefit from a newer and faster framework like [**FastAPI**](https://github.com/tiangolo/fastapi) (based on ASGI instead of WSGI), and a Docker image like [**tiangolo/uvicorn-gunicorn-fastapi**](https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker).
-
-It would give you about 200% the performance achievable with an older WSGI framework (like Flask or Django), even when using this image.
-
-Also, if you want to use new technologies like WebSockets it would be easier with a newer framework based on ASGI, like **FastAPI**. As the standard ASGI was designed to be able to handle asynchronous code like the one needed for WebSockets.
-
-## Technical Details
-
-### Meinheld
-
-**Meinheld** is a high-performance WSGI-compliant web server.
-
-### Gunicorn
-
-You can use **Gunicorn** to manage Meinheld and run multiple processes of it.
-
-## Alternatives
-
-This image was created to be an alternative to [**tiangolo/uwsgi-nginx**](https://github.com/tiangolo/uwsgi-nginx-docker), providing about 400% the performance of that image.
-
-And to be the base of [**tiangolo/meinheld-gunicorn-flask**](https://github.com/tiangolo/meinheld-gunicorn-flask-docker).
-
-## 🚨 WARNING: You Probably Don't Need this Docker Image
-
-You are probably using **Kubernetes** or similar tools. In that case, you probably **don't need this image** (or any other **similar base image**). You are probably better off **building a Docker image from scratch**.
-
----
-
-If you have a cluster of machines with **Kubernetes**, Docker Swarm Mode, Nomad, or other similar complex system to manage distributed containers on multiple machines, then you will probably want to **handle replication** at the **cluster level** instead of using a **process manager** in each container that starts multiple **worker processes**, which is what this Docker image does.
-
-In those cases (e.g. using Kubernetes) you would probably want to build a **Docker image from scratch**, installing your dependencies, and running **a single process** instead of this image.
-
-For example, using [Gunicorn](https://gunicorn.org/) you could have a file `app/gunicorn_conf.py` with:
-
-```Python
-# Gunicorn config variables
-loglevel = "info"
-errorlog = "-"  # stderr
-accesslog = "-"  # stdout
-worker_tmp_dir = "/dev/shm"
-graceful_timeout = 120
-timeout = 120
-keepalive = 5
-threads = 3
-```
-
-And then you could have a `Dockerfile` with:
-
-```Dockerfile
-FROM python:3.9
-
-WORKDIR /code
-
-COPY ./requirements.txt /code/requirements.txt
-
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-
-COPY ./app /code/app
-
-CMD ["gunicorn", "--conf", "app/gunicorn_conf.py", "--bind", "0.0.0.0:80", "app.main:app"]
-```
-
-You can read more about these ideas in the [FastAPI documentation about: FastAPI in Containers - Docker](https://fastapi.tiangolo.com/deployment/docker/#replication-number-of-processes) as the same ideas would apply to other web applications in containers.
-
-## When to Use this Docker Image
-
-### A Simple App
-
-You could want a process manager running multiple worker processes in the container if your application is **simple enough** that you don't need (at least not yet) to fine-tune the number of processes too much, and you can just use an automated default, and you are running it on a **single server**, not a cluster.
-
-### Docker Compose
-
-You could be deploying to a **single server** (not a cluster) with **Docker Compose**, so you wouldn't have an easy way to manage replication of containers (with Docker Compose) while preserving the shared network and **load balancing**.
-
-Then you could want to have **a single container** with a **process manager** starting **several worker processes** inside, as this Docker image does.
-
-### Prometheus and Other Reasons
-
-You could also have **other reasons** that would make it easier to have a **single container** with **multiple processes** instead of having **multiple containers** with **a single process** in each of them.
-
-For example (depending on your setup) you could have some tool like a Prometheus exporter in the same container that should have access to **each of the requests** that come.
-
-In this case, if you had **multiple containers**, by default, when Prometheus came to **read the metrics**, it would get the ones for **a single container each time** (for the container that handled that particular request), instead of getting the **accumulated metrics** for all the replicated containers.
-
-Then, in that case, it could be simpler to have **one container** with **multiple processes**, and a local tool (e.g. a Prometheus exporter) on the same container collecting Prometheus metrics for all the internal processes and exposing those metrics on that single container.
-
----
-
-Read more about it all in the [FastAPI documentation about: FastAPI in Containers - Docker](https://fastapi.tiangolo.com/deployment/docker/), as the same concepts apply to other web applications in containers.
 
 ## How to use
 
@@ -152,7 +57,7 @@ You can use this image as a base image for other images.
 Assuming you have a file `requirements.txt`, you could have a `Dockerfile` like this:
 
 ```Dockerfile
-FROM tiangolo/meinheld-gunicorn:python3.9
+FROM alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-google-secret-manager
 
 COPY ./requirements.txt /app/requirements.txt
 
@@ -400,63 +305,37 @@ If you need to run a Python script before starting the app, you could make the `
 python /app/my_custom_prestart_script.py
 ```
 
-## 🚨 Alpine Python Warning
-
-In short: You probably shouldn't use Alpine for Python projects, instead use the `slim` Docker image versions.
-
----
-
-Do you want more details? Continue reading 👇
-
-Alpine is more useful for other languages where you build a static binary in one Docker image stage (using multi-stage Docker building) and then copy it to a simple Alpine image, and then just execute that binary. For example, using Go.
-
-But for Python, as Alpine doesn't use the standard tooling used for building Python extensions, when installing packages, in many cases Python (`pip`) won't find a precompiled installable package (a "wheel") for Alpine. And after debugging lots of strange errors you will realize that you have to install a lot of extra tooling and build a lot of dependencies just to use some of these common Python packages. 😩
-
-This means that, although the original Alpine image might have been small, you end up with a an image with a size comparable to the size you would have gotten if you had just used a standard Python image (based on Debian), or in some cases even larger. 🤯
-
-And in all those cases, it will take much longer to build, consuming much more resources, building dependencies for longer, and also increasing its carbon footprint, as you are using more CPU time and energy for each build. 🌳
-
-If you want slim Python images, you should instead try and use the `slim` versions that are still based on Debian, but are smaller. 🤓
-
 ## Tests
 
-All the image tags, configurations, environment variables and application options are tested.
+
+This project is using **Poetry**. You need a working poetry and python3 environment before setting up a development environment. When you do you can just:
+
+```bash
+poetry install
+```
+
+To run all the linters and tests run `./scripts/test.sh` within poetry:
+```bash
+poetry run ./scripts/tests.sh
+```
+
+tests.sh script reads .env file that can have the following format:
+```bash
+IMAGE_NAME=alexiskandre/meinheld-gunicorn
+TAG_NAME=python3.7-alpine-google-secret-manager
+```
+
 
 ## Release Notes
 
-### Latest Changes
+### Latest Changes after forking
 
-* 📝 Add note to discourage Alpine with Python. PR [#42](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/42) by [@tiangolo](https://github.com/tiangolo).
-* 🔥 Remove support for Python 2.7. PR [#41](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/41) by [@tiangolo](https://github.com/tiangolo).
-* 📝 Add Kubernetes warning, when to use this image. PR [#40](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/40) by [@tiangolo](https://github.com/tiangolo).
-* ✏️ Fix typo duplicate "Note" in Readme. PR [#39](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/39) by [@tiangolo](https://github.com/tiangolo).
-* ♻️ Add pip flag `--no-cache-dir` to reduce disk size used. PR [#38](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/38) by [@tiangolo](https://github.com/tiangolo).
-* 👷 Update Latest Changes GitHub Action. PR [#37](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/37) by [@tiangolo](https://github.com/tiangolo).
-* 👷 Add Dependabot and external requirements to get automated upgrade PRs. PR [#29](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/29) by [@tiangolo](https://github.com/tiangolo).
-* ✨ Add support for Python 3.9 and Python 3.9 Alpine. PR [#24](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/24) by [@gv-collibris](https://github.com/gv-collibris).
-* 👷 Add latest-changes GitHub Action, update issue-manager, and add sponsors funding. PR [#21](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/21) by [@tiangolo](https://github.com/tiangolo).
-* Add Python 3.8 with Alpine 3.11. PR [#16](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/16).
-* Add support for Python 3.8. PR [#15](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/15).
-* Refactor build setup:
-    * Migrate to GitHub Actions for CI.
-    * Centralize and simplify code and configs.
-    * Update tests and types.
-    * Move from Pipenv to Poetry.
-    * PR [#14](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/14).
+* 🔥 Adding grpcio, grpcio-tools and google-secret-manager libraries in Alpine Linux Docker Images.
+* 🔥 Switching the Dockerfiles to use the latest available Alpine version.
+* 📝 Modyfing predafult gunicorn config to remove concurrency. In this way it's optimized to be used in concurrent platforms like Google Cloud Run, Kubernetes etc.
+* 📝 Wrapping the project in poetry and updating the tests. Updated pyproject.toml dependecies.
 
-### 0.3.0
-
-* Refactor tests to use env vars and add image tags for each build date, like `tiangolo/meinheld-gunicorn:python3.7-2019-10-15`. PR [#8](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/8).
-
-### 0.2.0
-
-* Add support for Python 2.7 (you should use Python 3.7 or Python 3.6). PR [#6](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/6).
-
-* Upgrade Travis. PR [#5](https://github.com/tiangolo/meinheld-gunicorn-docker/pull/5).
-
-### 0.1.0
-
-* Add support for `/app/prestart.sh`.
+Feel free to contact me.
 
 ## License
 
