@@ -10,7 +10,7 @@
   *the latest version of Alpine*
 ---
 
-**Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-gcp-secret-manager`.
+**Note**: There are [tags for each build date](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcp/tags). If you need to "pin" the Docker image version you use, you can select one of those tags. E.g. `alexiskandre/meinheld-gunicorn-gcp:python3.7-alpine-gcp-secret-manager`.
 
 Dockerfiles with other versions python (without preinstalled grpcio libs) can be found in the [original git repository](https://github.com/tiangolo/meinheld-gunicorn-docker/). 
 
@@ -55,7 +55,7 @@ However you can always modify it by either
 
 **GitHub repo**: [https://github.com/iskandre/meinheld-gunicorn-docker/](https://github.com/iskandre/meinheld-gunicorn-docker/)
 
-**Docker Hub image**: [https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcloud/)
+**Docker Hub image**: [https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcp/](https://hub.docker.com/r/alexiskandre/meinheld-gunicorn-gcp/)
 
 
 ## How to use
@@ -67,7 +67,7 @@ You can use this image as a base image for other images.
 Assuming you have a file `requirements.txt`, you could have a `Dockerfile` like this:
 
 ```Dockerfile
-FROM alexiskandre/meinheld-gunicorn-gcloud:python3.7-alpine-google-secret-manager
+FROM alexiskandre/meinheld-gunicorn-gcp:python3.7-alpine-gcp-secret-manager
 
 COPY ./requirements.txt /app/requirements.txt
 
